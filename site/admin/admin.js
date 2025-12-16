@@ -17,11 +17,35 @@ const SECURITY_SALT = 'RobBob_2025_SecureAdmin_9x7k2m5n8p';
 
 // Secure hash function using SHA-256
 async function secureHash(input) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(input + SECURITY_SALT);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    // Check if crypto.subtle is available (requires HTTPS or localhost)
+    if (window.crypto && window.crypto.subtle) {
+        try {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(input + SECURITY_SALT);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        } catch (error) {
+            console.error('Crypto API error:', error);
+        }
+    }
+    
+    // Fallback: Simple hash for non-secure contexts (development only)
+    // This is not cryptographically secure but allows testing
+    return simpleHash(input + SECURITY_SALT);
+}
+
+// Simple fallback hash function (NOT cryptographically secure - for development only)
+function simpleHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    // Convert to hex string and pad to 64 characters
+    const hexHash = Math.abs(hash).toString(16);
+    return hexHash.padStart(64, '0').slice(0, 64);
 }
 
 // Verify credentials against hardcoded hashes
