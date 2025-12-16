@@ -209,25 +209,9 @@ body.light .glass-panel {
   height: 32px;
   border-radius: var(--radius);
   object-fit: contain;
+  background: transparent;
 }
 
-.logo-icon-fallback {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, var(--accent), var(--green));
-  border-radius: var(--radius);
-  box-shadow: 0 0 20px var(--accent-glow);
-  animation: logoGlow 3s ease-in-out infinite;
-}
-
-@keyframes logoGlow {
-  0%, 100% {
-    box-shadow: 0 0 20px var(--accent-glow);
-  }
-  50% {
-    box-shadow: 0 0 30px var(--accent-glow), 0 0 40px var(--green-glow);
-  }
-}
 
 .logo-text {
   font-weight: 900;
@@ -663,6 +647,10 @@ body.light .news-item:hover {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 20px;
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
 }
 
 .game-card {
